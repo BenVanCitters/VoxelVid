@@ -1,6 +1,8 @@
 import processing.opengl.*;
 
 
+final float E = 2.718281828459045235360287471352;
+
 boolean debug=true;
 
 int wWidth = 100;
@@ -13,6 +15,7 @@ float threshholdVal = .3;
 
 PImage textureImg;//sample tex.png
 
+int pointMassCount = 30;
 PointMass pointMasses[];
 
 void setup()
@@ -32,7 +35,7 @@ void setup()
  
 void initMasses()
 {
-  pointMasses = new PointMass[10];
+  pointMasses = new PointMass[pointMassCount];
   for(int i = 0; i < pointMasses.length; i++)
   {
     float radian = random(TWO_PI);
@@ -49,10 +52,12 @@ void updateMasses()
     pointMasses[i].update();
   }
 }
- 
+final float SQRT_TWO_PI = sqrt(TWO_PI);
+
 void updateWeights()
 {
   float curThresh = threshholdVal; //save off one value so we don't get weird/unsynced banding issues
+  float myRadius = .05;
   for(int i =0 ; i < wHeight; i++)
   {
     for(int j = 0; j < wWidth; j++)
@@ -61,10 +66,18 @@ void updateWeights()
 //      weights[i][j] = random(curThresh*2);
       for(int k = 0; k < pointMasses.length; k++)
       {
-        weights[i][j] += 5/dist(pointMasses[k].pos[0],
-                                pointMasses[k].pos[1],
-                                j*width/wWidth,
-                                i*height/wHeight);
+        float curDist = dist(pointMasses[k].pos[0],
+                        pointMasses[k].pos[1],
+                        j*width/wWidth,
+                        i*height/wHeight);
+                                
+        //normal dist -> y = e^(-(x-mu)^2/(2*sigma^2)/sqrt(2*Pi*sigma) ... delta is a the spread, mu is the 'x' displacement
+        //y = e^(-x^2/(2*delta^2))/sqrt(2*Pi)*sigma
+        weights[i][j] += exp(-curDist*curDist/2*myRadius*myRadius)/myRadius*SQRT_TWO_PI;
+//        weights[i][j] += 5/curDist;
+
+//        if(curDist < myRadius)                                
+//          weights[i][j] += sqrt(myRadius*myRadius- curDist*curDist);
       }
       thresh[i][j] = curThresh > weights[i][j]?(byte)1:(byte)0;
     }
@@ -92,7 +105,8 @@ void drawWeights()
   }
   popMatrix();
 }
- 
+
+float zScaling = 1.f;
 
 void drawCase(int index, int i, int j)
 {
@@ -107,7 +121,7 @@ void drawCase(int index, int i, int j)
                             (weights[i+1][j]+weights[i][j])/2};
   //scale the zvalues                            
   for(int k = 0; k < hts.length;k++)
-    hts[k] *= 5;  
+    hts[k] *= zScaling;  
   beginShape();
   texture(textureImg);
   switch(index){
@@ -363,13 +377,28 @@ void draw()
   updateWeights();
   background(255);
   fill(0);
+  float tm = millis()/1000.f;
+  pushMatrix();
+//  translate(width/2,height/2);
+//  rotateX(tm/2);
+//  rotateY(tm/2.5);
+//  rotateZ(tm/2.8);
+//  translate(-width/2,-height/2);
   drawWeights();
-  
+  popMatrix();
   if(debug)
   {
-    textSize(22);
-    fill(0);
-    text("frameRate: " + frameRate, 10, 30);
+    pushMatrix();
+    textSize(22);    
+//    translate(10,30);
+     fill(0,0,0);
+//    text("frameRate: " + frameRate, 10,30);
+    
+    
+//    translate(-2,-2,-2);
+   fill(0,255,0);
+    text("frameRate: " + frameRate,8,28);
+    popMatrix();
   }
 }
  

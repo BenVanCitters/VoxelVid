@@ -66,9 +66,10 @@ void controllerChange(int channel, int number, int value) {
    
   switch(number){
     case 1:  // = K1
-      threshholdVal = value/127.f;
+      threshholdVal = value*15/127.f;
       break;
     case 2: // = K2
+      zScaling = value*15/127.f;
       break;  
     case 3: // = K3
       break;  
