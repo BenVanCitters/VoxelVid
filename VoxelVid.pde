@@ -97,235 +97,246 @@ void drawWeights()
 void drawCase(int index, int i, int j)
 {
   float texBase[] = new float[]{j*wWSpacing,i*wHSpacing};
+  float hts[] = new float[]{weights[i][j],
+                            (weights[i][j+1]+weights[i][j])/2,
+                            weights[i][j+1],
+                            (weights[i][j+1]+weights[i+1][j+1])/2,
+                            weights[i+1][j+1],
+                            (weights[i+1][j+1]+weights[i+1][j])/2,
+                            weights[i+1][j],
+                            (weights[i+1][j]+weights[i][j])/2};
+  //scale the zvalues                            
+  for(int k = 0; k < hts.length;k++)
+    hts[k] *= 5;  
   beginShape();
   texture(textureImg);
   switch(index){
     case 0:
-        vertex(0,0
+        vertex(0,0,hts[0]
         ,texBase[0],texBase[1]
         );
-        vertex(1,0
+        vertex(1,0,hts[2]
         ,texBase[0]+wWSpacing,texBase[1]
         );
-        vertex(1,1
+        vertex(1,1,hts[4]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
         );
-        vertex(0,1
+        vertex(0,1,hts[6]
         ,texBase[0],texBase[1]+wHSpacing
         );
         break;
     case 1:
-      vertex(0,0
+      vertex(0,0,hts[0]
         ,texBase[0],texBase[1]
         );
-      vertex(1,0
+      vertex(1,0,hts[2]
         ,texBase[0]+wWSpacing,texBase[1]
         );
-      vertex(1,1
+      vertex(1,1,hts[4]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
         );
-      vertex(.5,1
+      vertex(.5,1,hts[5]
         ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
         );
-      vertex(0,.5
+      vertex(0,.5,hts[7]
         ,texBase[0],texBase[1]+wHSpacing/2
         );
       break;
     case 2:
-      vertex(0,0
+      vertex(0,0,hts[0]
         ,texBase[0],texBase[1]
         );
-      vertex(1,0
+      vertex(1,0,hts[2]
         ,texBase[0]+wWSpacing,texBase[1]
         );
-      vertex(1,.5
+      vertex(1,.5,hts[3]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
         );
-      vertex(.5,1
+      vertex(.5,1,hts[5]
         ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
         );
-      vertex(0,1
+      vertex(0,1,hts[6]
         ,texBase[0],texBase[1]+wHSpacing
         );
       break;
     case 3:
-      vertex(0,0
+      vertex(0,0,hts[0]
         ,texBase[0],texBase[1]
         );
-      vertex(1,0
+      vertex(1,0,hts[2]
         ,texBase[0]+wWSpacing,texBase[1]
         );
-      vertex(1,.5
+      vertex(1,.5,hts[3]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
         );
-      vertex(0,.5
+      vertex(0,.5,hts[7]
         ,texBase[0],texBase[1]+wHSpacing/2
         );
       break;
     case 4:      
-      vertex(0,0
+      vertex(0,0,hts[0]
         ,texBase[0],texBase[1]
         );
-      vertex(.5,0
+      vertex(.5,0,hts[1]
         ,texBase[0]+wWSpacing/2,texBase[1]
         );
-      vertex(1,.5
+      vertex(1,.5,hts[3]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
         );
-      vertex(1,1
+      vertex(1,1,hts[4]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
         );
-      vertex(0,1
+      vertex(0,1,hts[6]
         ,texBase[0],texBase[1]+wHSpacing
         );
       break;
     case 5:
-        vertex(0,0
+        vertex(0,0,hts[0]
         ,texBase[0],texBase[1]
         );              
-        vertex(.5,0
+        vertex(.5,0,hts[1]
         ,texBase[0]+wWSpacing/2,texBase[1]
         );
-        vertex(0,.5
+        vertex(0,.5,hts[7]
         ,texBase[0],texBase[1]+wHSpacing/2
         );
       endShape();
       beginShape();
         texture(textureImg);
-        vertex(1,.5
+        vertex(1,.5,hts[3]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
         );
-        vertex(1,1
+        vertex(1,1,hts[4]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
         );
-        vertex(.5,1
+        vertex(.5,1,hts[5]
         ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
         );
       break;
     case 6:      
-      vertex(0,0
+      vertex(0,0,hts[0]
         ,texBase[0],texBase[1]
         );
-      vertex(.5,0
+      vertex(.5,0,hts[1]
         ,texBase[0]+wWSpacing/2,texBase[1]
         );
-      vertex(.5,1
+      vertex(.5,1,hts[5]
         ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
         );
-      vertex(0,1
+      vertex(0,1,hts[6]
         ,texBase[0],texBase[1]+wHSpacing
         );
       break;
     case 7:        
-      vertex(0,0
+      vertex(0,0,hts[0]
         ,texBase[0],texBase[1]
         );
-      vertex(.5,0
+      vertex(.5,0,hts[1]
         ,texBase[0]+wWSpacing/2,texBase[1]
         );
-      vertex(0,.5
+      vertex(0,.5,hts[7]
         ,texBase[0],texBase[1]+wHSpacing/2
         );
       break;
     case 8:  
-      vertex(.5,0
+      vertex(.5,0,hts[1]
         ,texBase[0]+wWSpacing/2,texBase[1]
         );
-      vertex(1,0
+      vertex(1,0,hts[2]
         ,texBase[0]+wWSpacing,texBase[1]
         );
-      vertex(1,1
+      vertex(1,1,hts[4]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
         );
-      vertex(0,1
+      vertex(0,1,hts[6]
         ,texBase[0],texBase[1]+wHSpacing
         );
-      vertex(0,.5
+      vertex(0,.5,hts[7]
         ,texBase[0],texBase[1]+wHSpacing/2
         );
       break;
     case 9:
-      vertex(.5,0
+      vertex(.5,0,hts[1]
         ,texBase[0]+wWSpacing/2,texBase[1]
         );
-      vertex(1,0
+      vertex(1,0,hts[2]
         ,texBase[0]+wWSpacing,texBase[1]
         );
-       vertex(1,1
+       vertex(1,1,hts[4]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
         );
-      vertex(.5,1
+      vertex(.5,1,hts[5]
         ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
         );
       break;
     case 10:
-        vertex(.5,0
+        vertex(.5,0,hts[1]
         ,texBase[0]+wWSpacing/2,texBase[1]
         );
-        vertex(1,0
+        vertex(1,0,hts[2]
         ,texBase[0]+wWSpacing,texBase[1]
         );
-        vertex(1,.5
+        vertex(1,.5,hts[3]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
         );
       endShape();
       
       beginShape();
         texture(textureImg);
-        vertex(.5,1
+        vertex(.5,1,hts[5]
         ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
         );
-        vertex(0,1
+        vertex(0,1,hts[6]
         ,texBase[0],texBase[1]+wHSpacing
         );
-        vertex(0,.5
+        vertex(0,.5,hts[7]
         ,texBase[0],texBase[1]+wHSpacing/2
         );      
       break;
     case 11:
-      vertex(.5,0
+      vertex(.5,0,hts[1]
         ,texBase[0]+wWSpacing/2,texBase[1]
         );
-      vertex(1,0
+      vertex(1,0,hts[2]
         ,texBase[0]+wWSpacing,texBase[1]
         );
-      vertex(1,.5
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
+      vertex(1,.5,hts[3]
+        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
         );
       break;
     case 12:
-      vertex(1,.5
+      vertex(1,.5,hts[3]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
         );
-      vertex(1,1
+      vertex(1,1,hts[4]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
         );
-      vertex(0,1
+      vertex(0,1,hts[6]
         ,texBase[0],texBase[1]+wHSpacing
         );
-      vertex(0,.5
-        ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing/2
+      vertex(0,.5,hts[7]
+        ,texBase[0],texBase[1]+wHSpacing/2
         );
       break;
     case 13:
-      vertex(1,.5
+      vertex(1,.5,hts[3]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
         );
-      vertex(1,1
+      vertex(1,1,hts[4]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
         );
-      vertex(.5,1
+      vertex(.5,1,hts[5]
         ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
         );
       break;
     case 14:
-      vertex(.5,1
+      vertex(.5,1,hts[5]
         ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
         );
-      vertex(0,1
+      vertex(0,1,hts[6]
         ,texBase[0],texBase[1]+wHSpacing
         );
-      vertex(0,.5
+      vertex(0,.5,hts[7]
         ,texBase[0],texBase[1]+wHSpacing/2
         );
       break;
@@ -347,6 +358,7 @@ public void init()
  
 void draw()
 {
+  lights();
   updateMasses();
   updateWeights();
   background(255);
