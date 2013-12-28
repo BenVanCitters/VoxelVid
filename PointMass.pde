@@ -1,11 +1,12 @@
 class PointMass
 {
-  float mass;
+  float m;
   float pos[];
   float vel[];
   
-  PointMass(float[] position, float[] velocity)
+  PointMass(float[] position, float[] velocity, float mass)
   {
+    m = mass;
     pos = position;
     vel = velocity;
   }

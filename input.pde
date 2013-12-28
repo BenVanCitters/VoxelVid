@@ -19,6 +19,7 @@ void keyPressed()
   switch(key){
     case 'd':
       debug = !debug;
+      println("Debug Output" + (debug?"enabled":"disabled"));
       break;
     case 's':
       saveFrame("sreenCaptures/img-######.png");
@@ -66,7 +67,7 @@ void controllerChange(int channel, int number, int value) {
    
   switch(number){
     case 1:  // = K1
-      threshholdVal = value*15/127.f;
+      threshholdVal = value*.00005/127.f;
       break;
     case 2: // = K2
       zScaling = value*15/127.f;

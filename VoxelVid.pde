@@ -1,28 +1,30 @@
 import processing.opengl.*;
-
+import processing.video.*;
 
 final float E = 2.718281828459045235360287471352;
 
 boolean debug=true;
 
-int wWidth = 100;
+int wWidth = 90;
 float wWSpacing;
-int wHeight = 100;
+int wHeight = 90;
 float wHSpacing;
 float weights[][];
 byte thresh[][];
 float threshholdVal = .3;
 
+Capture cam;
 PImage textureImg;//sample tex.png
 
-int pointMassCount = 30;
+int pointMassCount = 20;
 PointMass pointMasses[];
 
 void setup()
 {
   // push it to the second monitor but not when run as applet
-  size (1024,768, P3D);
+  size (1024,768, OPENGL);
   textureImg = loadImage("sample tex.png");
+  cam = new Capture(this, 320, 240);
   noCursor();
 
   initLPD8();
@@ -41,7 +43,8 @@ void initMasses()
     float radian = random(TWO_PI);
     float spd = 1+random(3);
     pointMasses[i] = new PointMass(new float[]{width/2,height/2},
-                                   new float[]{spd*cos(radian),spd*sin(radian)});
+                                   new float[]{spd*cos(radian),spd*sin(radian)},
+                                   .02+random(.04));
   }
 }
  
@@ -70,7 +73,7 @@ void updateWeights()
                         pointMasses[k].pos[1],
                         j*width/wWidth,
                         i*height/wHeight);
-                                
+        myRadius = pointMasses[k].m;                        
         //normal dist -> y = e^(-(x-mu)^2/(2*sigma^2)/sqrt(2*Pi*sigma) ... delta is a the spread, mu is the 'x' displacement
         //y = e^(-x^2/(2*delta^2))/sqrt(2*Pi)*sigma
         weights[i][j] += exp(-curDist*curDist/2*myRadius*myRadius)/myRadius*SQRT_TWO_PI;
@@ -119,11 +122,14 @@ void drawCase(int index, int i, int j)
                             (weights[i+1][j+1]+weights[i+1][j])/2,
                             weights[i+1][j],
                             (weights[i+1][j]+weights[i][j])/2};
-  //scale the zvalues                            
+  //scale the zvalues   
+float curScaling =  zScaling;
   for(int k = 0; k < hts.length;k++)
-    hts[k] *= zScaling;  
-  beginShape();
-  texture(textureImg);
+    hts[k] *= curScaling;  
+//  beginShape();
+
+      beginShape(TRIANGLE_FAN);
+  texture(cam);
   switch(index){
     case 0:
         vertex(0,0,hts[0]
@@ -139,7 +145,9 @@ void drawCase(int index, int i, int j)
         ,texBase[0],texBase[1]+wHSpacing
         );
         break;
+//      endShape();
     case 1:
+//      beginShape(TRIANGLE_FAN);
       vertex(0,0,hts[0]
         ,texBase[0],texBase[1]
         );
@@ -215,8 +223,8 @@ void drawCase(int index, int i, int j)
         ,texBase[0],texBase[1]+wHSpacing/2
         );
       endShape();
-      beginShape();
-        texture(textureImg);
+      beginShape(TRIANGLE_FAN);
+        texture(cam);
         vertex(1,.5,hts[3]
         ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
         );
@@ -295,8 +303,8 @@ void drawCase(int index, int i, int j)
         );
       endShape();
       
-      beginShape();
-        texture(textureImg);
+      beginShape(TRIANGLE_FAN);
+        texture(cam);
         vertex(.5,1,hts[5]
         ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
         );
@@ -369,10 +377,29 @@ public void init()
   // call PApplet.init() to take care of business 
   super.init(); 
 } 
- 
+
+void lightPass()
+{
+  //  lights();
+  lightSpecular(255, 255, 255);
+  directionalLight(255, 255, 255, -1, 0, 0);
+  ambientLight(200,200,200);
+  float s = mouseX*250 / float(width);
+  specular(s, s, s);
+  emissive(100,100,100);
+  shininess(50);
+}
+
+public void captureEvent(Capture c) {
+  c.read();
+}
+
 void draw()
 {
-  lights();
+//  if (cam.available() == true) {
+//    cam.read();
+//  }
+  lightPass();
   updateMasses();
   updateWeights();
   background(255);
@@ -388,17 +415,14 @@ void draw()
   popMatrix();
   if(debug)
   {
-    pushMatrix();
+    hint(DISABLE_DEPTH_TEST);
     textSize(22);    
-//    translate(10,30);
-     fill(0,0,0);
-//    text("frameRate: " + frameRate, 10,30);
+    fill(0,0,0);
+    text("frameRate: " + frameRate, 10,30);
     
-    
-//    translate(-2,-2,-2);
-   fill(0,255,0);
-    text("frameRate: " + frameRate,8,28);
-    popMatrix();
+    fill(0,255,0);
+    text("frameRate: " + frameRate,9,29);
+    hint(ENABLE_DEPTH_TEST);
   }
 }
  
