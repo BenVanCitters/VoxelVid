@@ -5,13 +5,14 @@ final float E = 2.718281828459045235360287471352;
 
 boolean debug=true;
 
-int wWidth = 90;
+int wWidth = 80;
 float wWSpacing;
-int wHeight = 90;
+int wHeight = 80;
 float wHSpacing;
 float weights[][];
 byte thresh[][];
 float threshholdVal = .3;
+float zScaling = 1.f;
 
 Capture cam;
 PImage textureImg;//sample tex.png
@@ -22,7 +23,7 @@ PointMass pointMasses[];
 void setup()
 {
   // push it to the second monitor but not when run as applet
-  size (1024,768, OPENGL);
+  size (1024,768, P3D);
   textureImg = loadImage("sample tex.png");
   cam = new Capture(this, 320, 240);
   noCursor();
@@ -95,278 +96,27 @@ void drawWeights()
   float xScaling = width*1.0/(wWidth-1);
   pushMatrix();
   scale(xScaling,yScaling);
+  
+  beginShape(TRIANGLES);
+  texture(cam);
   for(int i = 0; i < wHeight-1; i++)
   {
     for(int j = 0; j < wWidth-1; j++)
     {
-      pushMatrix();
-      translate(j,i);
+//      pushMatrix();
+//      translate(j,i);
       int index = thresh[i][j]<<3 | thresh[i][j+1]<<2 | thresh[i+1][j+1]<<1 | thresh[i+1][j];
       drawCase(index,i,j);
-      popMatrix();
+//      popMatrix();
     }
   }
+  endShape();
   popMatrix();
 }
 
-float zScaling = 1.f;
 
-void drawCase(int index, int i, int j)
-{
-  float texBase[] = new float[]{j*wWSpacing,i*wHSpacing};
-  float hts[] = new float[]{weights[i][j],
-                            (weights[i][j+1]+weights[i][j])/2,
-                            weights[i][j+1],
-                            (weights[i][j+1]+weights[i+1][j+1])/2,
-                            weights[i+1][j+1],
-                            (weights[i+1][j+1]+weights[i+1][j])/2,
-                            weights[i+1][j],
-                            (weights[i+1][j]+weights[i][j])/2};
-  //scale the zvalues   
-float curScaling =  zScaling;
-  for(int k = 0; k < hts.length;k++)
-    hts[k] *= curScaling;  
-//  beginShape();
 
-      beginShape(TRIANGLE_FAN);
-  texture(cam);
-  switch(index){
-    case 0:
-        vertex(0,0,hts[0]
-        ,texBase[0],texBase[1]
-        );
-        vertex(1,0,hts[2]
-        ,texBase[0]+wWSpacing,texBase[1]
-        );
-        vertex(1,1,hts[4]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
-        );
-        vertex(0,1,hts[6]
-        ,texBase[0],texBase[1]+wHSpacing
-        );
-        break;
-//      endShape();
-    case 1:
-//      beginShape(TRIANGLE_FAN);
-      vertex(0,0,hts[0]
-        ,texBase[0],texBase[1]
-        );
-      vertex(1,0,hts[2]
-        ,texBase[0]+wWSpacing,texBase[1]
-        );
-      vertex(1,1,hts[4]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
-        );
-      vertex(.5,1,hts[5]
-        ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
-        );
-      vertex(0,.5,hts[7]
-        ,texBase[0],texBase[1]+wHSpacing/2
-        );
-      break;
-    case 2:
-      vertex(0,0,hts[0]
-        ,texBase[0],texBase[1]
-        );
-      vertex(1,0,hts[2]
-        ,texBase[0]+wWSpacing,texBase[1]
-        );
-      vertex(1,.5,hts[3]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
-        );
-      vertex(.5,1,hts[5]
-        ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
-        );
-      vertex(0,1,hts[6]
-        ,texBase[0],texBase[1]+wHSpacing
-        );
-      break;
-    case 3:
-      vertex(0,0,hts[0]
-        ,texBase[0],texBase[1]
-        );
-      vertex(1,0,hts[2]
-        ,texBase[0]+wWSpacing,texBase[1]
-        );
-      vertex(1,.5,hts[3]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
-        );
-      vertex(0,.5,hts[7]
-        ,texBase[0],texBase[1]+wHSpacing/2
-        );
-      break;
-    case 4:      
-      vertex(0,0,hts[0]
-        ,texBase[0],texBase[1]
-        );
-      vertex(.5,0,hts[1]
-        ,texBase[0]+wWSpacing/2,texBase[1]
-        );
-      vertex(1,.5,hts[3]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
-        );
-      vertex(1,1,hts[4]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
-        );
-      vertex(0,1,hts[6]
-        ,texBase[0],texBase[1]+wHSpacing
-        );
-      break;
-    case 5:
-        vertex(0,0,hts[0]
-        ,texBase[0],texBase[1]
-        );              
-        vertex(.5,0,hts[1]
-        ,texBase[0]+wWSpacing/2,texBase[1]
-        );
-        vertex(0,.5,hts[7]
-        ,texBase[0],texBase[1]+wHSpacing/2
-        );
-      endShape();
-      beginShape(TRIANGLE_FAN);
-        texture(cam);
-        vertex(1,.5,hts[3]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
-        );
-        vertex(1,1,hts[4]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
-        );
-        vertex(.5,1,hts[5]
-        ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
-        );
-      break;
-    case 6:      
-      vertex(0,0,hts[0]
-        ,texBase[0],texBase[1]
-        );
-      vertex(.5,0,hts[1]
-        ,texBase[0]+wWSpacing/2,texBase[1]
-        );
-      vertex(.5,1,hts[5]
-        ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
-        );
-      vertex(0,1,hts[6]
-        ,texBase[0],texBase[1]+wHSpacing
-        );
-      break;
-    case 7:        
-      vertex(0,0,hts[0]
-        ,texBase[0],texBase[1]
-        );
-      vertex(.5,0,hts[1]
-        ,texBase[0]+wWSpacing/2,texBase[1]
-        );
-      vertex(0,.5,hts[7]
-        ,texBase[0],texBase[1]+wHSpacing/2
-        );
-      break;
-    case 8:  
-      vertex(.5,0,hts[1]
-        ,texBase[0]+wWSpacing/2,texBase[1]
-        );
-      vertex(1,0,hts[2]
-        ,texBase[0]+wWSpacing,texBase[1]
-        );
-      vertex(1,1,hts[4]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
-        );
-      vertex(0,1,hts[6]
-        ,texBase[0],texBase[1]+wHSpacing
-        );
-      vertex(0,.5,hts[7]
-        ,texBase[0],texBase[1]+wHSpacing/2
-        );
-      break;
-    case 9:
-      vertex(.5,0,hts[1]
-        ,texBase[0]+wWSpacing/2,texBase[1]
-        );
-      vertex(1,0,hts[2]
-        ,texBase[0]+wWSpacing,texBase[1]
-        );
-       vertex(1,1,hts[4]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
-        );
-      vertex(.5,1,hts[5]
-        ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
-        );
-      break;
-    case 10:
-        vertex(.5,0,hts[1]
-        ,texBase[0]+wWSpacing/2,texBase[1]
-        );
-        vertex(1,0,hts[2]
-        ,texBase[0]+wWSpacing,texBase[1]
-        );
-        vertex(1,.5,hts[3]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
-        );
-      endShape();
-      
-      beginShape(TRIANGLE_FAN);
-        texture(cam);
-        vertex(.5,1,hts[5]
-        ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
-        );
-        vertex(0,1,hts[6]
-        ,texBase[0],texBase[1]+wHSpacing
-        );
-        vertex(0,.5,hts[7]
-        ,texBase[0],texBase[1]+wHSpacing/2
-        );      
-      break;
-    case 11:
-      vertex(.5,0,hts[1]
-        ,texBase[0]+wWSpacing/2,texBase[1]
-        );
-      vertex(1,0,hts[2]
-        ,texBase[0]+wWSpacing,texBase[1]
-        );
-      vertex(1,.5,hts[3]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
-        );
-      break;
-    case 12:
-      vertex(1,.5,hts[3]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
-        );
-      vertex(1,1,hts[4]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
-        );
-      vertex(0,1,hts[6]
-        ,texBase[0],texBase[1]+wHSpacing
-        );
-      vertex(0,.5,hts[7]
-        ,texBase[0],texBase[1]+wHSpacing/2
-        );
-      break;
-    case 13:
-      vertex(1,.5,hts[3]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing/2
-        );
-      vertex(1,1,hts[4]
-        ,texBase[0]+wWSpacing,texBase[1]+wHSpacing
-        );
-      vertex(.5,1,hts[5]
-        ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
-        );
-      break;
-    case 14:
-      vertex(.5,1,hts[5]
-        ,texBase[0]+wWSpacing/2,texBase[1]+wHSpacing
-        );
-      vertex(0,1,hts[6]
-        ,texBase[0],texBase[1]+wHSpacing
-        );
-      vertex(0,.5,hts[7]
-        ,texBase[0],texBase[1]+wHSpacing/2
-        );
-      break;
-    default:
-      break;
-  }
-  endShape();
-}
+
  
 // this is needed for fullscreen display on the second monitor
 public void init() 
