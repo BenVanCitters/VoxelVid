@@ -1,8 +1,6 @@
 import processing.opengl.*;
 import processing.video.*;
 
-final float E = 2.718281828459045235360287471352;
-
 boolean debug=true;
 
 int wWidth = 80;
@@ -25,7 +23,7 @@ void setup()
   // push it to the second monitor but not when run as applet
   size (1024,768, P3D);
   textureImg = loadImage("sample tex.png");
-  cam = new Capture(this, 320, 240);
+//  cam = new Capture(this, 320, 240);
   noCursor();
 
   initLPD8();
@@ -41,19 +39,29 @@ void initMasses()
   pointMasses = new PointMass[pointMassCount];
   for(int i = 0; i < pointMasses.length; i++)
   {
-    float radian = random(TWO_PI);
-    float spd = 1+random(3);
-    pointMasses[i] = new PointMass(new float[]{width/2,height/2},
-                                   new float[]{spd*cos(radian),spd*sin(radian)},
-                                   .02+random(.04));
+    pointMasses[i] = createPointMass();
   }
 }
  
+PointMass createPointMass()
+{
+  float radian = random(TWO_PI);
+    float spd = 1+random(3);
+    return new PointMass(new float[]{width/2,height/2},
+                                   new float[]{spd*cos(radian),spd*sin(radian)},
+                                   .02+random(.04));
+  
+}
+
 void updateMasses()
 {
   for(int i = 0; i < pointMasses.length; i++)
   {
     pointMasses[i].update();
+    if(pointMasses[i].isDead)
+    {
+      pointMasses[i] = createPointMass();
+    }
   }
 }
 final float SQRT_TWO_PI = sqrt(TWO_PI);
@@ -98,7 +106,7 @@ void drawWeights()
   scale(xScaling,yScaling);
   
   beginShape(TRIANGLES);
-  texture(cam);
+  texture(textureImg);
   for(int i = 0; i < wHeight-1; i++)
   {
     for(int j = 0; j < wWidth-1; j++)
