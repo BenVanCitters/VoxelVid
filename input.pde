@@ -37,12 +37,15 @@ void noteOn(int channel, int pad, int velocity) {
     println(" - Value: "+velocity);
   }
   switch(pad){
-    case 0:
+    case 36:
+    gIsFlying = !gIsFlying;
       break;   
     default:
       break;   
   }
 }
+
+boolean gIsFlying = false;
  
  
 // Right now we are doing nothing on pad release events
@@ -73,10 +76,13 @@ void controllerChange(int channel, int number, int value) {
       zScaling = value*15/127.f;
       break;  
     case 3: // = K3
+      spdMult = value* 60/127.f - 30;
       break;  
     case 4: // = K4
+      innerCircleRadius = value*2.f/127;
       break;  
     case 5: // = K5
+//      gFlySpeed = value/
       break;  
     default:
       break;   

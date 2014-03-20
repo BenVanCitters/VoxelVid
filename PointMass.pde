@@ -15,8 +15,8 @@ class PointMass
   void update()
   {
     float margin = 30;
-    pos[0]+= vel[0];
-    pos[1]+= vel[1];
+    pos[0]+= vel[0]*spdMult;
+    pos[1]+= vel[1]*spdMult;
     if(pos[0] > width+margin || pos[0]+margin < 0)
     {
       isDead = true;
