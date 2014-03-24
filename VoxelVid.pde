@@ -8,26 +8,27 @@ RollingSampleListener rSlisten;
 
 //debug vars
 boolean debug=false;
-int drawMillis;
-int updateMillis;
+long drawMillis;
+long updateMillis;
+long threshholdingMillis;
 
-MarchingSquareSurface mySurface;
+MarchingSquareOutline mySurface;
 
 float threshholdVal = .3f;
 float zScaling = 1.f;
 float spdMult = 1.f;
-Capture cam;
+//Capture cam;
 
 void setup()
 {
   // push it to the second monitor but not when run as applet
   size (screenWidth,screenHeight, OPENGL);
-  cam = new Capture(this, 640, 480);
+//  cam = new Capture(this, 640, 480);
   noCursor();
 
   initLPD8();
-  setupAudio();
-  mySurface = new MarchingSquareSurface();
+//  setupAudio();
+  mySurface = new MarchingSquareOutline();
   
   background(0);
 }
@@ -69,7 +70,7 @@ void renderBack()
   noStroke();
   fill(0,255);
   rect(0,0,width,height);
- hint(ENABLE_DEPTH_TEST);
+  hint(ENABLE_DEPTH_TEST);
 // float[] samples = new float[1024];//in.mix.toArray();
 //  rSlisten.getLastSamples(samples);
 //  
@@ -93,11 +94,11 @@ public void captureEvent(Capture c) {
 
 void draw()
 {
-  if (cam != null && cam.available() == true) 
-  {
-    cam.read();
-//    mySurface.textureImg = cam;
-  }
+//  if (cam != null && cam.available() == true) 
+//  {
+//    cam.read();
+////    mySurface.textureImg = cam;
+//  }
   renderBack();
 //  lightPass();
 
@@ -110,8 +111,25 @@ void draw()
 //  rotateY(tm/2.5);
 //  rotateZ(tm/2.8);
 //  translate(-width/2,-height/2);
-
-  mySurface.draw();
+  strokeWeight(1);
+  long lTm = millis();
+  mySurface.updateWeights(millis());
+  int stepcount= 12;
+  for(int i = 0; i < stepcount; i++)
+  {
+    stroke(255,i*255/(stepcount-1),0);
+    threshholdVal = .2+.025*i;
+    translate(0,0,10);
+    pushMatrix();
+    translate(-width/2,-height/2);
+    rotateX(tm/22);
+    rotateY(tm/22.5);
+    rotateZ(tm/22.8);
+    translate(width/2,height/2);
+    mySurface.draw();  
+    popMatrix();
+  }
+  
   popMatrix();
   if(debug)
   {
@@ -140,6 +158,15 @@ void draw()
     
     fill(0,255,0);
     text(s,9,79);
+    
+     s = "threshholdingMillis: " + threshholdingMillis;
+    
+    fill(0,0,0);
+    text(s, 10,110);
+    
+    fill(0,255,0);
+    text(s,9,109);
+    
     hint(ENABLE_DEPTH_TEST);
   }
 }

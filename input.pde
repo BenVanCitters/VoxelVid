@@ -79,7 +79,6 @@ void controllerChange(int channel, int number, int value) {
       spdMult = value* 60/127.f - 30;
       break;  
     case 4: // = K4
-      innerCircleRadius = value*2.f/127;
       break;  
     case 5: // = K5
 //      gFlySpeed = value/
