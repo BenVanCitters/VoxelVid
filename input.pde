@@ -24,6 +24,13 @@ void keyPressed()
     case 's':
       saveFrame("sreenCaptures/img-######.png");
       break;
+   case 'r':
+      if(recording)
+      {
+         mm.finish();
+         recording = false;
+      }
+      break;
   }
 }
  

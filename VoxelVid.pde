@@ -4,6 +4,10 @@ import ddf.minim.*;
 Minim minim;
 AudioInput in;
 
+boolean recording = false;
+float secondsRecorded = 0.0f;
+MovieMaker mm;
+
 RollingSampleListener rSlisten; 
 
 //debug vars
@@ -22,7 +26,8 @@ float spdMult = 1.f;
 void setup()
 {
   // push it to the second monitor but not when run as applet
-  size (screenWidth,screenHeight, OPENGL);
+//  size (screenWidth,screenHeight, OPENGL);
+  size (1280,720, OPENGL);
 //  cam = new Capture(this, 640, 480);
   noCursor();
 
@@ -31,6 +36,12 @@ void setup()
   mySurface = new MarchingSquareOutline();
   
   background(0);
+    if(recording)
+  {
+    frameRate(30);    
+    mm = new MovieMaker(this, width, height, "2nd'st recording.mov",
+                         30, MovieMaker.VIDEO, MovieMaker.LOW);
+  } 
 }
 
 void setupAudio()
@@ -105,6 +116,8 @@ void draw()
 
   fill(0);
   float tm = millis()/1000.f;
+  if(recording)
+    tm = frameCount*30.f/1000.f;
   pushMatrix();
 //  translate(width/2,height/2);
 //  rotateX(tm/2);
@@ -113,21 +126,32 @@ void draw()
 //  translate(-width/2,-height/2);
   strokeWeight(1);
   long lTm = millis();
-  mySurface.updateWeights(millis());
-  int stepcount= 12;
+  mySurface.updateWeights(tm);
+  int stepcount= 15;
+  float stepHeight = 15.f;
+  float threshIncrement =0.031666666;// mouseX*.06/height;
+  println("threshIncrement: " + threshIncrement);
   for(int i = 0; i < stepcount; i++)
   {
-    stroke(255,i*255/(stepcount-1),0);
-    threshholdVal = .2+.025*i;
-    translate(0,0,10);
+    stroke((stepcount-i-1)*255,i*255/(stepcount-1),0);
+    threshholdVal = .1+threshIncrement*i;
+    
     pushMatrix();
+
+    translate(width/2,height/8,-50);
+    rotateX(PI/3);
+    rotateZ(PI/2);
+//       rotateY(PI);
+
+
+//    rotateZ(tm/5.5);
+
+    translate(0,0,(stepcount-1)*stepHeight/2-15*i);
     translate(-width/2,-height/2);
-    rotateX(tm/22);
-    rotateY(tm/22.5);
-    rotateZ(tm/22.8);
-    translate(width/2,height/2);
     mySurface.draw();  
     popMatrix();
+    
+
   }
   
   popMatrix();
@@ -169,7 +193,29 @@ void draw()
     
     hint(ENABLE_DEPTH_TEST);
   }
+        if(recording)
+  {
+
+    secondsRecorded = frameCount/30.0;
+    mm.addFrame();  // Add window's pixels to movie
+    println("kinectMush3D - frameRate: " + frameRate + " secondsRecorded: " + secondsRecorded);
+  }
 }
  
-
+void exit() 
+{
+  if(recording)
+  {
+    mm.finish();
+  }  
+  super.exit ();
+}
+void stop()
+{
+  if(recording)
+  {
+    mm.finish();
+  }
+  super.stop();
+}
 

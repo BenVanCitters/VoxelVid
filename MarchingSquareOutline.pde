@@ -53,7 +53,7 @@ void updateMasses()
 }
 final float SQRT_TWO_PI = sqrt(TWO_PI);
 
-void updateWeights(long tm)
+void updateWeights(float tm)
 {
   noiseDetail(8,.3);
   updateMillis = millis();
@@ -66,9 +66,9 @@ void updateWeights(long tm)
       float xval = i/75.f;
       float yval = j/75.f;
       
-      weights[i][j] = noise(xval,yval,tm/1800.f)/2 + 
-                      noise(xval,tm/2300.f,yval)/2;// 0;
-
+//      weights[i][j] = noise(xval,yval,tm/1800.f)/2 +noise(xval,tm/2300.f,yval)/2;// 0;
+      weights[i][j] = noise(xval,yval-tm/4.8f,tm/18.f);// +noise(xval,tm/2300.f,yval)/2;// 0;
+      
 //      for(int k = 0; k < pointMasses.length; k++)
 //      {
 //        float curDist = dist(pointMasses[k].pos[0],
