@@ -77,13 +77,13 @@ void controllerChange(int channel, int number, int value) {
    
   switch(number){
     case 1:  // = K1
-      threshholdVal = value*100/127.f;
+      threshIncrement =value*0.031666666 /127.f;;// mouseX*.06/height;
       break;
     case 2: // = K2
-      zScaling = value*15/127.f;
+      weightTimeDiv = .01+value*.8/127.f;
       break;  
     case 3: // = K3
-      spdMult = value* 60/127.f - 30;
+      stepElev = value* 15/127.f;
       break;  
     case 4: // = K4
       break;  

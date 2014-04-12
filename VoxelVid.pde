@@ -26,8 +26,8 @@ float spdMult = 1.f;
 void setup()
 {
   // push it to the second monitor but not when run as applet
-//  size (screenWidth,screenHeight, OPENGL);
-  size (1280,720, OPENGL);
+  size (screenWidth,screenHeight, OPENGL);
+//  size (1280,720, OPENGL);
 //  cam = new Capture(this, 640, 480);
   noCursor();
 
@@ -102,7 +102,9 @@ public void captureEvent(Capture c) {
   c.read();
   mySurface.textureImg = c;
 }
-
+float threshIncrement =0.031666666;// mouseX*.06/height;
+float weightTimeDiv = 1.f;
+float stepElev = 15;
 void draw()
 {
 //  if (cam != null && cam.available() == true) 
@@ -129,7 +131,7 @@ void draw()
   mySurface.updateWeights(tm);
   int stepcount= 15;
   float stepHeight = 15.f;
-  float threshIncrement =0.031666666;// mouseX*.06/height;
+  
   println("threshIncrement: " + threshIncrement);
   for(int i = 0; i < stepcount; i++)
   {
@@ -146,7 +148,7 @@ void draw()
 
 //    rotateZ(tm/5.5);
 
-    translate(0,0,(stepcount-1)*stepHeight/2-15*i);
+    translate(0,0,(stepcount-1)*stepHeight/2-stepElev*i);
     translate(-width/2,-height/2);
     mySurface.draw();  
     popMatrix();

@@ -1,8 +1,8 @@
 class MarchingSquareOutline
 {
-  int wWidth = 200*1366/768;
+  int wWidth = 150*1366/768;
   float wWSpacing;
-  int wHeight = 200;
+  int wHeight = 150;
   float wHSpacing;
   float weights[][];
   byte thresh[][];
@@ -67,7 +67,7 @@ void updateWeights(float tm)
       float yval = j/75.f;
       
 //      weights[i][j] = noise(xval,yval,tm/1800.f)/2 +noise(xval,tm/2300.f,yval)/2;// 0;
-      weights[i][j] = noise(xval,yval-tm/4.8f,tm/18.f);// +noise(xval,tm/2300.f,yval)/2;// 0;
+      weights[i][j] = noise(xval,yval-tm/4.8f, tm/(weightTimeDiv*18.f));// +noise(xval,tm/2300.f,yval)/2;// 0;
       
 //      for(int k = 0; k < pointMasses.length; k++)
 //      {
