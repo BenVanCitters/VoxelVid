@@ -27,7 +27,7 @@ void keyPressed()
    case 'r':
       if(recording)
       {
-         mm.finish();
+
          recording = false;
       }
       break;

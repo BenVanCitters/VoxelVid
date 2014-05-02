@@ -6,7 +6,7 @@ AudioInput in;
 
 boolean recording = false;
 float secondsRecorded = 0.0f;
-MovieMaker mm;
+
 
 RollingSampleListener rSlisten; 
 
@@ -26,8 +26,8 @@ float spdMult = 1.f;
 void setup()
 {
   // push it to the second monitor but not when run as applet
-  size (screenWidth,screenHeight, OPENGL);
-//  size (1280,720, OPENGL);
+//  size (500,500, P3D);
+  size (1280,720, OPENGL);
 //  cam = new Capture(this, 640, 480);
   noCursor();
 
@@ -39,8 +39,7 @@ void setup()
     if(recording)
   {
     frameRate(30);    
-    mm = new MovieMaker(this, width, height, "2nd'st recording.mov",
-                         30, MovieMaker.VIDEO, MovieMaker.LOW);
+
   } 
 }
 
@@ -76,12 +75,13 @@ void lightPass()
 
 void renderBack()
 {
-  noLights();
-  hint(DISABLE_DEPTH_TEST);   
-  noStroke();
-  fill(0,255);
-  rect(0,0,width,height);
-  hint(ENABLE_DEPTH_TEST);
+  background(0);
+//  noLights();
+//  hint(DISABLE_DEPTH_TEST);   
+//  noStroke();
+//  fill(0,255);
+//  rect(0,0,width,height);
+//  hint(ENABLE_DEPTH_TEST);
 // float[] samples = new float[1024];//in.mix.toArray();
 //  rSlisten.getLastSamples(samples);
 //  
@@ -98,10 +98,6 @@ void renderBack()
  
 }
 
-public void captureEvent(Capture c) {
-  c.read();
-  mySurface.textureImg = c;
-}
 float threshIncrement =0.031666666;// mouseX*.06/height;
 float weightTimeDiv = 1.f;
 float stepElev = 15;
@@ -199,7 +195,6 @@ void draw()
   {
 
     secondsRecorded = frameCount/30.0;
-    mm.addFrame();  // Add window's pixels to movie
     println("kinectMush3D - frameRate: " + frameRate + " secondsRecorded: " + secondsRecorded);
   }
 }
@@ -208,7 +203,7 @@ void exit()
 {
   if(recording)
   {
-    mm.finish();
+
   }  
   super.exit ();
 }
@@ -216,7 +211,6 @@ void stop()
 {
   if(recording)
   {
-    mm.finish();
   }
   super.stop();
 }

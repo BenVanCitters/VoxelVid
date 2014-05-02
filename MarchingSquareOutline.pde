@@ -10,11 +10,9 @@ class MarchingSquareOutline
   int pointMassCount = 20;
   PointMass pointMasses[];
   
-  PImage textureImg;
   
   public MarchingSquareOutline()
   {
-    textureImg = loadImage("sample tex.jpg");
     weights = new float[wHeight][wWidth];
     thresh = new byte[wHeight][wWidth];
     wWSpacing = 1.f/wWidth;
@@ -112,7 +110,6 @@ void drawWeights()
   scale(xScaling,yScaling);
   
   beginShape(LINES);
-//  texture(cam);//(textureImg);
   for(int i = 0; i < wHeight-1; i++)
   {
     for(int j = 0; j < wWidth-1; j++)
